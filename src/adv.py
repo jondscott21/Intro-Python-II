@@ -6,13 +6,13 @@ from item import Item
 # Declare all the rooms
 
 item = {
-    'knife': Item('knife'),
-    'key': Item('key'),
-    'shield': Item('shield'),
-    'gold bar': Item('gold bar'),
-    'ruby': Item('ruby'),
-    'cloak': Item('cloak'),
-    'crown': Item('crown'),
+    'knife': Item('knife', 'old and rusty'),
+    'key': Item('key', 'a shiny silver key'),
+    'shield': Item('shield', 'a copper shield with a burnished patina'),
+    'gold bar': Item('gold bar', 'this looks heavy'),
+    'ruby': Item('ruby', "one of the biggest ruby's you've seen'"),
+    'cloak': Item('cloak', "this tattered cloak was blue at one point, now it's a weathered grey"),
+    'crown': Item('crown', 'simple gold crown with a modest saphire embedded in the front'),
 }
 
 room = {
@@ -63,25 +63,32 @@ player = Player('Bob', room['outside'])
 #
 # If the user enters "q", quit the game.
 def player_inputs(cmd_input):
-    if cmd_input == 'n' or cmd_input == 'e' or cmd_input == 'w' or cmd_input == 's':
-           player.set_room(cmd_input)
-    elif cmd_input == 'l':
-        player.current_room.get_loot()
-    elif cmd_input == 'h':
-        print('\nCommands: (n)orth, (e)ast, (s)outh, (w)est, (l)ook, t(ake), (d)rop, (h)elp, (q)uit \n')
-    elif cmd_input == 't':
-        item_prompt = input('Choose (all), or an item by name: ')
-        player.current_room.remove_loot(item_prompt)
-        # print(item_prompt)
-        # print(item[item_prompt])
-        # player.current_room.remove_loot('cloak')
-    elif cmd_input == 'q':
+    if cmd_input[0] == 'n' or cmd_input[0] == 'e' or cmd_input[0] == 'w' or cmd_input[0] == 's':
+           player.set_room(cmd_input[0])
+    elif cmd_input[0] == 'l':
+        player.current_room.print_loot()
+    elif cmd_input[0] == 'h':
+        print("\nCommands: (n)orth, (e)ast, (s)outh, (w)est, (get) 'all' or choose an item listed, (d)rop, (h)elp, (q)uit")
+    elif cmd_input[0] == 'get':
+        try:
+            player.set_inventory(cmd_input[1])
+            player.current_room.remove_loot(cmd_input[1])
+        except:
+            print("\nplease type 'get' plus an item name, or choose 'get all'\n")
+    elif cmd_input[0] == 'drop':
+        try:
+            player.drop_item(cmd_input[1])
+        except:
+            print("\nplease type 'drop' plus an item name, or choose 'drop all'\n")
+    elif cmd_input[0] == 'i':
+        player.print_inventory()
+    elif cmd_input[0] == 'q':
         print('Goodbye!')
         exit()
     else:
-        print("Please enter a valid command: (n)orth, (e)ast, (s)outh, (w)est, (l)ook, t(ake), (d)rop, (h)elp, (q)uit")
+        print("\nPlease enter a valid command: (n)orth, (e)ast, (s)outh, (w)est, (get) 'all' or choose an item listed, (d)rop, (h)elp, (q)uit\n")
 
 while True:
     print(player.print_current())
-    cmd = input("-> ")
+    cmd = input("-> ").split(' ')
     player_inputs(cmd)
