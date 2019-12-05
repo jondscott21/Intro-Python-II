@@ -1,28 +1,38 @@
 import random
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
+item = {
+    'knife': Item('knife'),
+    'key': Item('key'),
+    'shield': Item('shield'),
+    'gold bar': Item('gold bar'),
+    'ruby': Item('ruby'),
+    'cloak': Item('cloak'),
+    'crown': Item('crown'),
+}
+
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", [item['gold bar'], item['crown'], item['cloak']]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", []),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", []),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", []),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", []),
 }
-
 
 # Link rooms together
 
@@ -53,15 +63,23 @@ player = Player('Bob', room['outside'])
 #
 # If the user enters "q", quit the game.
 def player_inputs(cmd_input):
-    if cmd_input == 'n' or 'e' or 'w' or 's':
+    if cmd_input == 'n' or cmd_input == 'e' or cmd_input == 'w' or cmd_input == 's':
            player.set_room(cmd_input)
+    elif cmd_input == 'l':
+        player.current_room.get_loot()
     elif cmd_input == 'h':
-        print('\nCommands: (n)orth, (e)ast, (s)outh, (w)est, (h)elp, (q)uit \n')
+        print('\nCommands: (n)orth, (e)ast, (s)outh, (w)est, (l)ook, t(ake), (d)rop, (h)elp, (q)uit \n')
+    elif cmd_input == 't':
+        item_prompt = input('Choose (all), or an item by name: ')
+        player.current_room.remove_loot(item_prompt)
+        # print(item_prompt)
+        # print(item[item_prompt])
+        # player.current_room.remove_loot('cloak')
     elif cmd_input == 'q':
         print('Goodbye!')
         exit()
     else:
-        print("Please enter a valid command: (n)orth, (e)ast, (s)outh, (w)est, (h)elp, (q)uit")
+        print("Please enter a valid command: (n)orth, (e)ast, (s)outh, (w)est, (l)ook, t(ake), (d)rop, (h)elp, (q)uit")
 
 while True:
     print(player.print_current())
